@@ -151,5 +151,5 @@ function getLineString(line) {
 
 rl.on('line', (line) => {
   const lineString = getLineString(line);
-  fs.appendFileSync(fWriteName, `${lineString}\r\n`);
+  fs.appendFileSync(fWriteName, `${lineString.toUpperCase()}\r\n`);
 });
