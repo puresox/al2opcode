@@ -63,3 +63,4 @@ typings/
 #file
 /file/*
 !/file/example.txt
+!/file/mcode.txt
