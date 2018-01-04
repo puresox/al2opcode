@@ -1,9 +1,10 @@
 const readline = require('readline');
 const fs = require('fs');
+const path = require('path');
 
 let lineNum = '';
-const fReadName = 'file/input.txt';
-const fWriteName = 'file/output.txt';
+const fReadName = path.resolve(__dirname, './file/input.txt');
+const fWriteName = path.resolve(__dirname, './file/output.txt');
 
 const rl = readline.createInterface({
   input: fs.createReadStream(fReadName),
