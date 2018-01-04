@@ -1,0 +1,24 @@
+{
+  "name": "assemblylanguage2op-code",
+  "version": "1.0.0",
+  "description": "把汇编代码转换成指令（计算机组成原理课程设计）",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/puresox/assemblyLanguage2OP-CODE.git"
+  },
+  "author": "puresox",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/puresox/assemblyLanguage2OP-CODE/issues"
+  },
+  "homepage": "https://github.com/puresox/assemblyLanguage2OP-CODE#readme",
+  "devDependencies": {
+    "eslint": "^4.9.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.7.0"
+  }
+}
