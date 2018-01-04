@@ -1,0 +1,241 @@
+00 IN R0      //输入计算次数R0 
+01 IN R1      //输入X
+02 RLC R1     //提取符号位
+03 BZC
+04 0EH
+05 RRC R1        //若x为正
+06 STA R1       //F0H存[x]补
+07 F0H
+08 COM R1
+09 INC R1
+0A STA R1
+0B F1H          //F1H存[-x]补
+0C JMP          //跳到处理输入Y
+0D 17H
+0E CLR R2        //令cy为0
+0F RLC R2
+10 RRC R1       //取x绝对值
+11 STA R1
+12 F1H          //x绝对值即为[-x]补
+13 COM R1       
+14 INC R1       //求[x]补
+15 STA R1       //存[x]补
+16 F0H
+17 IN R1       //输入Y
+18 RLC R1     //判断Y正负后过程同x
+19 BZC
+1A 20H
+1B RRC R1    //若Y为正
+1C STA R1    //存y补
+1D F2H 
+1E JMP       //跳到其它部分的初始化
+1F 27H        
+20 CLR R2    //若Y为负
+21 RLC R2
+22 RRC R1     //取绝对值
+23 COM R1
+24 INC R1
+25 STA R1     
+26 F2H      //存y补
+27 CLR R1   
+28 STA R1
+29 F3H     //存部分积初始化为0
+2A STA R1
+2B F4H     //存低8位初始化为0
+2C STA R1 
+2D F5H     //存高符号位为000
+2E LDA R1  //加载乘数y补
+2F F2H
+30 RRC R1
+31 BZC 
+32 44H      //跳转到处理10
+33 LDA R2 //加载部分积   //第一次比较处理00
+34 F3H 
+35 LDA R1 //加载高符号位
+36 F5H
+37 RRC R1
+38 STA R1   //保存右移后的高符号位
+39 F5H
+3A RRC R2   //右移部分积
+3B STA R2   //保存改变后的部分积
+3C F3H
+3D LDA R1   //加载低8位
+3E F4H
+3F RRC R1
+40 STA R1   //更新低8位
+41 F4H    
+42 JMP
+43 7DH      //跳转到第一次比较结束
+44 LDA R2
+45 F1H       //加载[-x]补
+46 LDA R1
+47 F5H  //读高符号位
+48 RLC R2  //左移-x补
+49 BZC    //判断-x补的符号位是1还是0 
+4A 4DH
+4B JMP 
+4C 52H
+4D INC R1  //高符号位加1    
+4E STA R1   存入
+4F F5H
+50 JMP
+51 52H
+52 CLR R1         
+53 RLC R1   //CY置0
+54 LDA R1   //读取部分积        
+55 F3H
+56 LDA R2  //读取-x补
+57 F1H
+58 ADC R2 R1 //加[-x]补
+59 STA R1    //保存部分积
+5A F3H
+5B BZC        //看加完是否有进位
+5C 76H      //跳转到有进位处理   跳到5E
+5D LDA R2     //如果没进位直接加载高符号位         
+5E F5H
+5F RRC R2
+60 BZC     //如果高符号位是1
+61 65H     //跳转到57
+62 CLR R2  //清0
+63 JMP
+64 67H
+65 CLR R2  
+66 COM R2
+67 STA R2          
+68 F5H
+69 RRC R2   //高符号位右移     
+6A STA R2   
+6B F5H   
+6C RRC R1    //部分积右移
+6D STA R1
+6E F3H
+6F LDA R2   //加载低8位
+70 F4H
+71 RRC R2   //低8位右移
+72 STA R2  
+73 F4H
+74 JMP
+75 7DH    //跳到第一次比较结束
+76 LDA R2   //有进位先加载高符号位     
+77 F5H
+78 INC R2   //高符号位加1，因为进位
+79 STA R2   //保存高符号位
+7A F5H
+7B JMP
+7C 5DH    //后面跟没符号位的结果一样    
+7D RRC R0    //第一次比较结束计数右移                    
+7E LDA R1  //第一次比较结束加载乘数(进入循环比较体)                
+7F F2H
+80 RRC R1   //乘数右移第一次
+81 STA R1    //第一次的右移需要保存
+82 F2H
+83 BZC
+84 C8H        //如果Yi+1是1
+85 RRC R1   //如果Yi+1是0，第二次右移不用保存
+86 BZC 
+87 8FH         //Yi是1 则处理10
+88 LDA R2 //处理00或11函数                      
+89 F3H 
+8A RRC R0 
+8B BZC
+8C E3H          //计算完毕跳转到输出
+8D JMP 
+8E A8H
+8F LDA R2              
+90 F1H       //加载[-x]补
+91 LDA R1
+92 F5H  //读高符号位
+93 RLC R2  //左移-x补
+94 BZC    //判断-x补的符号位是1还是0
+95 98H
+96 JMP 
+97 9BH
+98 INC R1   //高符号位是1加1                 
+99 STA R1   存入
+9A F5H 
+9B CLR R1                         
+9C RLC R1   //CY置0          
+9D LDA R1   //读取部分积
+9E F3H
+9F LDA R2  //读取-x补
+A0 F1H
+A1 ADC R2 R1 //加[-x]补
+A2 STA R1    //保存部分积                  
+A3 F3H
+A4 JMP 
+A5 DEH
+A6 BZC        //看加完是否有进位              
+A7 C2H        //跳转到有进位处理
+A8 JMP
+A9 E1H
+AA LDA R2     //如果没进位直接加载高符号位    
+AB F5H
+AC RRC R2
+AD BZC
+AE B2H
+AF CLR R2
+B0 JMP
+B1 B4H
+B2 CLR R2              
+B3 COM R2
+B4 STA R2            
+B5 F5H
+B6 RRC R2   //高符号位右移               
+B7 STA R2   
+B8 F5H   
+B9 RRC R1    //部分积右移
+BA STA R1
+BB F3H
+BC LDA R2   //加载低8位
+BD F4H
+BE RRC R2   //低8位右移
+BF STA R2  
+BE F4H
+C0 JMP
+C1 7EH
+C2 LDA R2   //有进位先加载高符号位        
+C3 F5H
+C4 INC R2   //高符号位加1，因为进位
+C5 STA R2   //保存高符号位
+C6 F5H
+C7 JMP
+C8 E1H      //后面跟没符号位的结果一样
+C9 RRC R1    //第二次右移判断Yi               
+CA BZC       
+CB 88H          //还是1则处理11  
+CC LDA R1
+CD F5H  //读高符号位
+CE LDA R2
+CF F2H
+D0 RLC R2  //左移x补
+D1 BZC    //判断x补的符号位是1还是0
+D2 D5H
+D3 JMP
+D4 D8H
+D5 INC R1  //高符号位是1加1           
+D6 STA R1   存入
+D7 F5H
+D8 CLR R1                         
+D9 RLC R1   //CY置0
+DA LDA R1   //读取部分积
+DB F3H
+DC LDA R2  //读取x补
+DD F0H
+DE ADC R2 R1  //加[x]补
+DF JMP
+E0 A6H
+E1 RRC R0                       
+E2 BZC
+E3 E6H          //计算完毕跳转到输出
+E4 JMP
+E5 AAH
+E6 LDA R1            
+E7 F5H
+E8 OUT R1
+E9 LDA R1
+EA F3H
+EB OUT R1
+EC LDA R1
+ED F4H
+EE OUT R1
+EF HALT LDA

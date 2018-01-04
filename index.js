@@ -2,7 +2,6 @@ const readline = require('readline');
 const fs = require('fs');
 
 let lineNum = '';
-
 const fReadName = 'file/input.txt';
 const fWriteName = 'file/output.txt';
 

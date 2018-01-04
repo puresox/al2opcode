@@ -61,4 +61,5 @@ typings/
 .vscode
 
 #file
-/file
+/file/*
+!/file/example.txt
